@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
-import 'package:mhk_portfolio_flutter/contact_me_section.dart';
-import 'package:mhk_portfolio_flutter/footer.dart';
-import 'package:mhk_portfolio_flutter/header_button.dart';
-import 'package:mhk_portfolio_flutter/profile_section.dart';
-import 'package:mhk_portfolio_flutter/projects_section.dart';
-import 'package:mhk_portfolio_flutter/resume_section.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/home/contact_me/contact_me_section.dart';
+import 'package:mhk_portfolio_flutter/home/footer.dart';
+import 'package:mhk_portfolio_flutter/home/header_button.dart';
+import 'package:mhk_portfolio_flutter/home/info/profile_section.dart';
+import 'package:mhk_portfolio_flutter/home/projects/projects_section.dart';
+import 'package:mhk_portfolio_flutter/home/timeline/resume_section.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

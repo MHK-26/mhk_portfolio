@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:timelines/timelines.dart';
 
 class Timeline extends StatelessWidget {

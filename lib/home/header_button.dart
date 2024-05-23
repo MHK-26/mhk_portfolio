@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
 
 class HeaderButton extends StatelessWidget {
   final String title;

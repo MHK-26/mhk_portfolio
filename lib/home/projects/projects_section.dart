@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
-import 'package:mhk_portfolio_flutter/project_card.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/home/projects/project_card.dart';
 
 class ProjectsPage extends StatelessWidget {
   final bool isDarkMode;

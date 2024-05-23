@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mhk_portfolio_flutter/info_section.dart';
-import 'package:mhk_portfolio_flutter/profile_card.dart';
+import 'package:mhk_portfolio_flutter/home/info/info_section.dart';
+import 'package:mhk_portfolio_flutter/home/info/profile_card.dart';
 
 class ProfileInfoSection extends StatelessWidget {
   final bool isDarkMode;

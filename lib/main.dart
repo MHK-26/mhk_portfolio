@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mhk_portfolio_flutter/home.dart';
+import 'package:mhk_portfolio_flutter/home/home.dart';
 
 void main() {
   runApp(MyWebPortfolio());

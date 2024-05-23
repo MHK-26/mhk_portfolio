@@ -1,8 +1,8 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
-import 'package:mhk_portfolio_flutter/social_links.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/home/info/social_links.dart';
 
 class ProfileCard extends StatelessWidget {
   final bool isDarkMode;

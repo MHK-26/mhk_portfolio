@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/colors.dart';
-import 'package:mhk_portfolio_flutter/resume_timeline.dart';
+import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/home/timeline/resume_timeline.dart';
 
 class ResumeSection extends StatelessWidget {
   final bool isDarkMode;
