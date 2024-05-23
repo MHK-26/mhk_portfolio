@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mhk_portfolio_flutter/home/certifications/certifications_section.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:mhk_portfolio_flutter/home/contact_me/contact_me_section.dart';
 import 'package:mhk_portfolio_flutter/home/footer.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int selected = 0;
   double selectedSectionOffset = 0;
   List<GlobalKey> sectionKeys = [
+    GlobalKey(),
     GlobalKey(),
     GlobalKey(),
     GlobalKey(),
@@ -90,10 +92,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Container(
                 key: sectionKeys[2],
-                child: ResumeSection(isDarkMode: isDarkMode),
+                child: CertificationsSection(isDarkMode: isDarkMode),
               ),
               Container(
                 key: sectionKeys[3],
+                child: ResumeSection(isDarkMode: isDarkMode),
+              ),
+              Container(
+                key: sectionKeys[4],
                 child: ContactPage(isDarkMode: isDarkMode),
               ),
               FooterSection(isDarkMode: isDarkMode),
@@ -132,21 +138,28 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () => scrollToSection(1),
           isSelected: selected == 1,
           isDarkMode: isDarkMode,
-          icon: Icons.file_copy_outlined,
-        ),
-        HeaderButton(
-          title: 'TIMELINE',
-          onPressed: () => scrollToSection(2),
-          isSelected: selected == 2,
-          isDarkMode: isDarkMode,
           icon: Icons.work_outline_sharp,
         ),
         HeaderButton(
-          title: 'CONTACT',
+          title: 'CERTIFICATIONS',
+          onPressed: () => scrollToSection(2),
+          isSelected: selected == 2,
+          isDarkMode: isDarkMode,
+          icon: Icons.workspace_premium,
+        ),
+        HeaderButton(
+          title: 'TIMELINE',
           onPressed: () => scrollToSection(3),
           isSelected: selected == 3,
           isDarkMode: isDarkMode,
-          icon: Icons.contact_phone_outlined,
+          icon: Icons.badge_outlined,
+        ),
+        HeaderButton(
+          title: 'CONTACT',
+          onPressed: () => scrollToSection(4),
+          isSelected: selected == 4,
+          isDarkMode: isDarkMode,
+          icon: Icons.call,
         ),
         Switch(
           value: isDarkMode,

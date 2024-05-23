@@ -119,7 +119,7 @@ class ProjectsPage extends StatelessWidget {
               'My Online Portfolio showcasing selected pieces of my work.\n Developed using flutter, Dart. optimized for web and mobile. and with night mode.',
               null,
               null,
-              'https://github.com/MHK-26',
+              'https://github.com/MHK-26/mhk_portfolio',
             ),
           ],
         ),
