@@ -8,8 +8,9 @@ My online portfolio showcasing selected pieces of my work.Developed using Flutte
 
 ## Demo
 
-![Alt text](./screenshots/portfoliovid.gif "Project demo")
-
+<p align="center">
+  <img src="./screenshots/portfoliovid.gif" alt="Project demo" style="width:100%;" />
+</p>
 
 
 ## Structure
