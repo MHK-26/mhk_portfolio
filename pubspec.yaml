@@ -35,10 +35,10 @@ dependencies:
   flutter_screenutil: ^5.0.0
   animated_text_kit:
   provider: ^6.0.0
-  email_validator:
-  http:
+  # email_validator:
+  # http:
   scrollable_positioned_list:
-  timelines:
+  # timelines:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
