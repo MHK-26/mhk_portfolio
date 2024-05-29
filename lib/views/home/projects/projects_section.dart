@@ -32,10 +32,11 @@ class ProjectsPage extends StatelessWidget {
       'title': 'My Expenses Tracker',
       'img': 'assets/projects/expenses.png',
       'description':
-          'Personal Expenses Tracker! Track my daily expenses easily. Developed using Flutter, Dart, Bloc State Management Package, Back4App.',
+          'Personal Expenses Tracker! Track my daily expenses easily. Developed using Flutter, Dart, Bloc State Management Package, Sqflite DB. (The play store release is in review)',
       'appStoreLink': null,
-      'playStoreLink': null,
-      'githubLink': 'https://github.com/MHK-26',
+      'playStoreLink':
+          'https://play.google.com/store/apps/details?id=com.mhk26.expenses_app',
+      'githubLink': 'https://github.com/MHK-26/expenses_tracker',
     },
     {
       'title': 'ATS Friendly Resume Generator',
