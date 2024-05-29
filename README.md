@@ -9,7 +9,7 @@ My online portfolio showcasing selected pieces of my work.Developed using Flutte
 ## Demo
 
 <p align="center">
-  <img src="./screenshots/portfoliovid.gif" alt="Project demo" style="width:100%;" />
+  <img src="./screenshots/portfoliovid.gif" alt="Project demo" style="width:200%;" />
 </p>
 
 
