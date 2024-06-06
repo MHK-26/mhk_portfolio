@@ -32,11 +32,20 @@ class ProjectsPage extends StatelessWidget {
       'title': 'My Expenses Tracker',
       'img': 'assets/projects/expenses.png',
       'description':
-          'Personal Expenses Tracker! Track my daily expenses easily. Developed using Flutter, Dart, Bloc State Management Package, Sqflite DB. (The play store release is in review)',
+          'Personal Expenses Tracker! Track my daily expenses easily. Developed using Flutter, Dart, Bloc State Management Package, Sqflite DB.',
       'appStoreLink': null,
       'playStoreLink':
           'https://play.google.com/store/apps/details?id=com.mhk26.expenses_app',
       'githubLink': 'https://github.com/MHK-26/expenses_tracker',
+    },
+    {
+      'title': 'AI Bot using Gemini',
+      'img': 'assets/projects/app.png',
+      'description':
+          'an AI-powered chat bot that leverages Google\'s Gemini model to provide real-time responses. The app features a user-friendly interface where users can send messages and receive instant replies. It utilizes state management to handle message flows and ensure a smooth user experience. The app also includes error handling and UI feedback to enhance usability.',
+      'appStoreLink': null,
+      'playStoreLink': null,
+      'githubLink': 'https://github.com/MHK-26/flutter_AI_Bot',
     },
     {
       'title': 'ATS Friendly Resume Generator',

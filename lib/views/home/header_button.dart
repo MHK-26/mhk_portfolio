@@ -32,12 +32,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        Switch(
-          value: isDarkMode,
-          onChanged: (value) {
-            Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-          },
-        ),
+        IconButton(
+            onPressed: () => Provider.of<ThemeProvider>(context, listen: false)
+                .toggleTheme(),
+            icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode))
+        // Switch(
+        //   value: isDarkMode,
+        //   onChanged: (value) {
+        //     Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+        //   },
+        // ),
       ],
     );
   }
