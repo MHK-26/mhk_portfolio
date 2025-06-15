@@ -3,10 +3,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CertificationCard extends StatelessWidget {
+class CertificationCard extends StatefulWidget {
   final String title;
   final String img;
-  final String description;
+  final String issuer;
+  final String category;
+  final String year;
+  final List<String> skills;
   final bool isDarkMode;
   final String? certificationLink;
 
@@ -14,100 +17,313 @@ class CertificationCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.img,
-    required this.description,
+    required this.issuer,
+    required this.category,
+    required this.year,
+    required this.skills,
     required this.isDarkMode,
     this.certificationLink,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return _buildNarrowCard(context);
-  }
+  State<CertificationCard> createState() => _CertificationCardState();
+}
 
-  Widget _buildNarrowCard(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDarkMode
-              ? [Colors.black54, Colors.black87]
-              : [Colors.white, Colors.grey[200]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 7,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              img,
-              fit: BoxFit.contain,
-              // width: double.infinity,
-              // height: 200,
-              cacheWidth: 500,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              color: AppColors.primary,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            description,
-            style: GoogleFonts.inter(
-              color: isDarkMode ? AppColors.darkWhite : AppColors.black,
-              fontSize: 16,
-            ),
-          ),
-          const SizedBox(height: 20),
-          _buildLinkButton(context, 'View Certification', certificationLink),
-        ],
-      ),
+class _CertificationCardState extends State<CertificationCard>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _shadowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
     );
+    
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.02,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    
+    _shadowAnimation = Tween<double>(
+      begin: 8.0,
+      end: 16.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
   }
 
-  Widget _buildLinkButton(BuildContext context, String label, String? url) {
-    if (url == null) return const SizedBox.shrink();
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
-    return ElevatedButton.icon(
-      onPressed: () {
-        _launchURL(context, url);
+  @override
+  Widget build(BuildContext context) {
+    return _buildModernCard(context);
+  }
+
+  Widget _buildModernCard(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: MouseRegion(
+            onEnter: (_) {
+              setState(() {
+                _isHovered = true;
+              });
+              _animationController.forward();
+            },
+            onExit: (_) {
+              setState(() {
+                _isHovered = false;
+              });
+              _animationController.reverse();
+            },
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: widget.isDarkMode
+                      ? [Colors.grey[850]!, Colors.grey[800]!]
+                      : [Colors.white, Colors.grey[50]!],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: _isHovered 
+                      ? AppColors.gold.withOpacity(0.5)
+                      : AppColors.gold.withOpacity(0.1),
+                  width: 2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _isHovered 
+                        ? AppColors.gold.withOpacity(0.2)
+                        : Colors.black.withOpacity(0.1),
+                    blurRadius: _shadowAnimation.value,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image Section
+                  Container(
+                    height: 120,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(18),
+                        topRight: Radius.circular(18),
+                      ),
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.gold.withOpacity(0.1),
+                          AppColors.gold.withOpacity(0.05),
+                        ],
+                      ),
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            widget.img,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Content Section
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Category Badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.gold.withOpacity(0.3),
+                              ),
+                            ),
+                            child: Text(
+                              widget.category,
+                              style: GoogleFonts.inter(
+                                color: AppColors.gold,
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 12),
+                          
+                          // Title
+                          Text(
+                            widget.title,
+                            style: GoogleFonts.poppins(
+                              color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              height: 1.3,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          
+                          const SizedBox(height: 8),
+                          
+                          // Issuer and Year
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  widget.issuer,
+                                  style: GoogleFonts.inter(
+                                    color: widget.isDarkMode 
+                                        ? AppColors.darkWhite.withOpacity(0.8)
+                                        : AppColors.black.withOpacity(0.7),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: widget.isDarkMode 
+                                      ? Colors.grey[700]
+                                      : Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  widget.year,
+                                  style: GoogleFonts.inter(
+                                    color: widget.isDarkMode 
+                                        ? AppColors.darkWhite
+                                        : AppColors.black,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          
+                          const SizedBox(height: 12),
+                          
+                          // Skills
+                          Wrap(
+                            spacing: 6,
+                            runSpacing: 4,
+                            children: widget.skills.take(3).map((skill) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.gold.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  skill,
+                                  style: GoogleFonts.inter(
+                                    color: AppColors.gold,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                          
+                          const Spacer(),
+                          
+                          // View Button
+                          if (widget.certificationLink != null)
+                            SizedBox(
+                              width: double.infinity,
+                              height: 36,
+                              child: ElevatedButton.icon(
+                                onPressed: () => _launchURL(context, widget.certificationLink!),
+                                icon: const Icon(Icons.open_in_new, size: 16),
+                                label: Text(
+                                  'View Certificate',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.gold,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
-      icon: const Icon(Icons.open_in_new),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isDarkMode ? AppColors.primary : AppColors.primary,
-        foregroundColor: AppColors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
     );
   }
 
   void _launchURL(BuildContext context, String url) async {
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url));
-    } else {
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch $url')),
+        );
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
+        SnackBar(content: Text('Error launching URL: $e')),
       );
     }
   }
