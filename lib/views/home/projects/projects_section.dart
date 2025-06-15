@@ -355,7 +355,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 20,
         mainAxisSpacing: 20,
-        childAspectRatio: 0.75, // Adjust based on content
+        childAspectRatio: 0.8, // Better proportion for content
       ),
       itemCount: projects.length,
       itemBuilder: (context, index) {

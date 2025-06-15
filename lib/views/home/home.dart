@@ -3,9 +3,8 @@ import 'package:mhk_portfolio_flutter/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:mhk_portfolio_flutter/views/home/hero/hero_section.dart';
-import 'package:mhk_portfolio_flutter/views/home/navigation/navigation_bar.dart';
 import 'package:mhk_portfolio_flutter/views/home/info/profile_section.dart';
-import 'package:mhk_portfolio_flutter/views/home/experience/experience_section.dart';
+import 'package:mhk_portfolio_flutter/views/home/navigation/navigation_bar.dart';
 import 'package:mhk_portfolio_flutter/views/home/projects/projects_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/certifications/certifications_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/contact/contact_section.dart';
@@ -22,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final Map<String, GlobalKey> _sectionKeys = {
     'hero': GlobalKey(),
     'about': GlobalKey(),
-    'experience': GlobalKey(),
     'projects': GlobalKey(),
     'certifications': GlobalKey(),
     'contact': GlobalKey(),
@@ -42,9 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onScroll() {
-    final scrollPosition = _scrollController.offset;
-    String newSection = 'hero';
-    
     _sectionKeys.forEach((section, key) {
       final context = key.currentContext;
       if (context != null) {
@@ -52,17 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
         if (box != null) {
           final position = box.localToGlobal(Offset.zero);
           if (position.dy <= 100 && position.dy + box.size.height > 100) {
-            newSection = section;
+            if (_currentSection != section) {
+              setState(() {
+                _currentSection = section;
+              });
+            }
           }
         }
       }
     });
-    
-    if (newSection != _currentSection) {
-      setState(() {
-        _currentSection = newSection;
-      });
-    }
   }
 
   void _scrollToSection(String section) {
@@ -85,29 +78,50 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.background,
       body: Stack(
         children: [
-          // Main content
           SingleChildScrollView(
             controller: _scrollController,
             child: Column(
               children: [
-                // Hero Section
+                // Hero and Profile Section (Same Height)
                 Container(
                   key: _sectionKeys['hero'],
-                  child: HeroSection(isDarkMode: isDarkMode),
-                ),
-                
-                // About Section
-                Container(
-                  key: _sectionKeys['about'],
-                  child: ProfileInfoSection(isDarkMode: isDarkMode),
-                ),
-                
-                _buildSectionDivider(isDarkMode),
-                
-                // Experience Section
-                Container(
-                  key: _sectionKeys['experience'],
-                  child: ExperienceSection(isDarkMode: isDarkMode),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      bool isMobile = constraints.maxWidth < 768;
+                      
+                      if (isMobile) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              child: ProfileInfoSection(isDarkMode: isDarkMode, showHeader: false),
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.8,
+                              child: HeroSection(isDarkMode: isDarkMode),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SizedBox(
+                          height: MediaQuery.of(context).size.height,
+                          child: Row(
+                            children: [
+                              // Hero Section
+                              Expanded(
+                                child: HeroSection(isDarkMode: isDarkMode),
+                              ),
+                              
+                              // Profile Section
+                              Expanded(
+                                child: ProfileInfoSection(isDarkMode: isDarkMode, showHeader: false),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  ),
                 ),
                 
                 _buildSectionDivider(isDarkMode),

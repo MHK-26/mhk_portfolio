@@ -118,18 +118,40 @@ class _ProjectCardState extends State<ProjectCard>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      transform: Matrix4.identity()
-                        ..translate(0.0, _isHovered ? -5.0 : 0.0),
-                      child: AspectRatio(
-                        aspectRatio: 16 / 9,
+                  Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: widget.isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        transform: Matrix4.identity()
+                          ..translate(0.0, _isHovered ? -5.0 : 0.0),
                         child: Image.asset(
                           widget.img,
-                          fit: BoxFit.cover,
-                          cacheHeight: 400,
+                          fit: BoxFit.contain,
+                          width: double.infinity,
+                          height: 200,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: AppColors.gold.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.image_not_supported,
+                                  color: AppColors.gold.withOpacity(0.5),
+                                  size: 50,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -229,16 +251,16 @@ class _ProjectCardState extends State<ProjectCard>
             ),
           ),
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            foregroundColor: AppColors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor: AppColors.gold,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             elevation: 4,
             shadowColor: AppColors.gold.withOpacity(0.3),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
+              borderRadius: BorderRadius.circular(12),
             ),
           ).copyWith(
-            overlayColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.1)),
+            overlayColor: WidgetStateProperty.all(Colors.white.withOpacity(0.1)),
           ),
         ),
       ),

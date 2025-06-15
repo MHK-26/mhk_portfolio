@@ -124,7 +124,7 @@ class _CertificationCardState extends State<CertificationCard>
                 children: [
                   // Image Section
                   Container(
-                    height: 120,
+                    height: 140,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
@@ -140,9 +140,9 @@ class _CertificationCardState extends State<CertificationCard>
                     ),
                     child: Center(
                       child: Container(
-                        width: 80,
-                        height: 80,
-                        padding: const EdgeInsets.all(8),
+                        width: 100,
+                        height: 100,
+                        padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
@@ -159,6 +159,23 @@ class _CertificationCardState extends State<CertificationCard>
                           child: Image.asset(
                             widget.img,
                             fit: BoxFit.contain,
+                            width: 76,
+                            height: 76,
+                            errorBuilder: (context, error, stackTrace) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: AppColors.gold.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.workspace_premium,
+                                    color: AppColors.gold,
+                                    size: 30,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -280,21 +297,22 @@ class _CertificationCardState extends State<CertificationCard>
                           if (widget.certificationLink != null)
                             SizedBox(
                               width: double.infinity,
-                              height: 36,
+                              height: 42,
                               child: ElevatedButton.icon(
                                 onPressed: () => _launchURL(context, widget.certificationLink!),
-                                icon: const Icon(Icons.open_in_new, size: 16),
+                                icon: const Icon(Icons.open_in_new, size: 18),
                                 label: Text(
                                   'View Certificate',
                                   style: GoogleFonts.inter(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.gold,
                                   foregroundColor: Colors.white,
-                                  elevation: 0,
+                                  elevation: 2,
+                                  shadowColor: AppColors.gold.withOpacity(0.3),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
                                   ),

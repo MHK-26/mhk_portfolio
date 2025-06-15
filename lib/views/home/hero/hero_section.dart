@@ -103,10 +103,8 @@ class _HeroSectionState extends State<HeroSection>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildProfileAvatar(isMobile),
+                          _buildWelcomeTitle(isMobile),
                           SizedBox(height: isMobile ? 30 : 40),
-                          _buildName(isMobile),
-                          SizedBox(height: isMobile ? 20 : 30),
                           _buildAnimatedRole(isMobile),
                           SizedBox(height: isMobile ? 30 : 40),
                           _buildDescription(isMobile),
@@ -138,56 +136,22 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildProfileAvatar(bool isMobile) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [
-            AppColors.gold.withOpacity(0.4),
-            AppColors.gold.withOpacity(0.1),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.gold.withOpacity(0.3),
-            blurRadius: 30,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Container(
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-        ),
-        padding: const EdgeInsets.all(6),
-        child: CircleAvatar(
-          radius: isMobile ? 60 : 80,
-          backgroundImage: const AssetImage('assets/imgs/pp.jpeg'),
-          backgroundColor: Colors.transparent,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildName(bool isMobile) {
+  Widget _buildWelcomeTitle(bool isMobile) {
     return Column(
       children: [
         Text(
-          'Mohammad Hisham',
+          'Welcome to my Portfolio',
           style: GoogleFonts.poppins(
             color: widget.isDarkMode ? AppColors.white : AppColors.black,
-            fontSize: isMobile ? 36 : 48,
+            fontSize: isMobile ? 32 : 48,
             fontWeight: FontWeight.bold,
             height: 1.1,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 16),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
@@ -202,10 +166,10 @@ class _HeroSectionState extends State<HeroSection>
             ],
           ),
           child: Text(
-            'Senior Software Engineer',
+            'Creating Digital Solutions',
             style: GoogleFonts.inter(
               color: Colors.white,
-              fontSize: isMobile ? 14 : 16,
+              fontSize: isMobile ? 14 : 18,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -322,8 +286,8 @@ class _HeroSectionState extends State<HeroSection>
         backgroundColor: filled ? backgroundColor : Colors.transparent,
         foregroundColor: textColor,
         padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 20 : 24,
-          vertical: isMobile ? 12 : 16,
+          horizontal: isMobile ? 24 : 32,
+          vertical: isMobile ? 16 : 20,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),

@@ -70,27 +70,105 @@ class _InfoSectionState extends State<InfoSection>
           ],
           borderRadius: BorderRadius.circular(25),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildGreetingSection(),
-            const SizedBox(height: 30),
-            _buildAboutSection(),
-            const SizedBox(height: 30),
-            _buildExperienceCards(),
-            const SizedBox(height: 30),
-            _buildTechStackSection(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildProfileSection(),
+              const SizedBox(height: 40),
+              _buildGreetingSection(),
+              const SizedBox(height: 30),
+              _buildAboutSection(),
+              const SizedBox(height: 30),
+              _buildExperienceCards(),
+              const SizedBox(height: 30),
+              _buildTechStackSection(),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildProfileSection() {
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gold.withOpacity(0.4),
+                AppColors.gold.withOpacity(0.1),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.3),
+                blurRadius: 30,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(6),
+            child: const CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage('assets/imgs/pp.jpeg'),
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Mohammad Hisham',
+          style: GoogleFonts.poppins(
+            color: widget.isDarkMode ? AppColors.white : AppColors.black,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+            ),
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Text(
+            'Senior Software Engineer',
+            style: GoogleFonts.inter(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildGreetingSection() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(8),
@@ -111,7 +189,7 @@ class _InfoSectionState extends State<InfoSection>
               'Hello There!',
               style: GoogleFonts.poppins(
                 color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                fontSize: 32,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 height: 1.1,
               ),
@@ -128,6 +206,7 @@ class _InfoSectionState extends State<InfoSection>
             fontSize: 16,
             height: 1.6,
           ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
