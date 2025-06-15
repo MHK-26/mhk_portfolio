@@ -18,13 +18,6 @@ class _ContactSectionState extends State<ContactSection>
 
   final List<Map<String, dynamic>> _contactMethods = [
     {
-      'title': 'Email',
-      'subtitle': 'mzoom26@hotmail.com',
-      'icon': Icons.email,
-      'color': Colors.red,
-      'action': 'mailto:mzoom26@hotmail.com',
-    },
-    {
       'title': 'LinkedIn',
       'subtitle': '/in/mhk26',
       'icon': Icons.work,
@@ -47,12 +40,6 @@ class _ContactSectionState extends State<ContactSection>
     },
   ];
 
-  final List<Map<String, dynamic>> _quickLinks = [
-    {'title': 'About', 'section': 'about'},
-    {'title': 'Experience', 'section': 'experience'},
-    {'title': 'Projects', 'section': 'projects'},
-    {'title': 'Certifications', 'section': 'certifications'},
-  ];
 
   @override
   void initState() {
@@ -107,10 +94,7 @@ class _ContactSectionState extends State<ContactSection>
         children: [
           _buildHeader(isMobile),
           const SizedBox(height: 60),
-          if (isMobile)
-            _buildMobileLayout()
-          else
-            _buildDesktopLayout(),
+          _buildContactMethods(),
         ],
       ),
     );
@@ -175,31 +159,6 @@ class _ContactSectionState extends State<ContactSection>
     );
   }
 
-  Widget _buildDesktopLayout() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 2,
-          child: _buildContactMethods(),
-        ),
-        const SizedBox(width: 60),
-        Expanded(
-          child: _buildQuickActions(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMobileLayout() {
-    return Column(
-      children: [
-        _buildContactMethods(),
-        const SizedBox(height: 40),
-        _buildQuickActions(),
-      ],
-    );
-  }
 
   Widget _buildContactMethods() {
     return TweenAnimationBuilder<double>(
@@ -326,96 +285,6 @@ class _ContactSectionState extends State<ContactSection>
     );
   }
 
-  Widget _buildQuickActions() {
-    return TweenAnimationBuilder<double>(
-      duration: const Duration(milliseconds: 1200),
-      tween: Tween(begin: 0.0, end: 1.0),
-      builder: (context, value, child) {
-        return Transform.translate(
-          offset: Offset(30 * (1 - value), 0),
-          child: Opacity(
-            opacity: value,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.gold.withOpacity(0.1),
-                    AppColors.gold.withOpacity(0.05),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.gold.withOpacity(0.2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Quick Links',
-                    style: GoogleFonts.poppins(
-                      color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  ..._quickLinks.map((link) {
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: InkWell(
-                        onTap: () {
-                          // TODO: Implement section navigation
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.arrow_right,
-                              color: AppColors.gold,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              link['title'],
-                              style: GoogleFonts.inter(
-                                color: widget.isDarkMode 
-                                    ? AppColors.darkWhite.withOpacity(0.8)
-                                    : AppColors.black.withOpacity(0.7),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => _launchURL('mailto:mzoom26@hotmail.com'),
-                      icon: const Icon(Icons.send, size: 18),
-                      label: const Text('Send Message'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.gold,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Widget _buildFooter(bool isMobile) {
     return Container(
@@ -443,7 +312,7 @@ class _ContactSectionState extends State<ContactSection>
           ),
           const SizedBox(height: 20),
           Text(
-            '© 2024 Mohammad Hisham. Built with Flutter 💙',
+            '© 2025 Mohammad Hisham',
             style: GoogleFonts.inter(
               color: widget.isDarkMode 
                   ? AppColors.darkWhite.withOpacity(0.6)
