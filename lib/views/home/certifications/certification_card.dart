@@ -120,6 +120,7 @@ class _CertificationCardState extends State<CertificationCard>
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   // Image Section
                   Container(
@@ -165,11 +166,12 @@ class _CertificationCardState extends State<CertificationCard>
                   ),
                   
                   // Content Section
-                  Expanded(
+                  Flexible(
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           // Category Badge
                           Container(
@@ -272,7 +274,7 @@ class _CertificationCardState extends State<CertificationCard>
                             }).toList(),
                           ),
                           
-                          const Spacer(),
+                          const SizedBox(height: 12),
                           
                           // View Button
                           if (widget.certificationLink != null)
