@@ -328,20 +328,82 @@ class _ProjectsPageState extends State<ProjectsPage> {
     
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
-      child: Column(
+      child: LayoutBuilder(
         key: ValueKey(filtered.length),
-        children: filtered.map((project) {
-          return ProjectCard(
-            title: project['title']!,
-            img: project['img']!,
-            description: project['description']!,
-            isDarkMode: widget.isDarkMode,
-            appStoreLink: project['appStoreLink'],
-            playStoreLink: project['playStoreLink'],
-            gitHubLink: project['githubLink'],
-          );
-        }).toList(),
+        builder: (context, constraints) {
+          // Responsive grid layout
+          if (constraints.maxWidth > 1200) {
+            // Desktop: 2 columns
+            return _buildGridLayout(filtered, 2);
+          } else if (constraints.maxWidth > 800) {
+            // Tablet: 2 columns but smaller
+            return _buildGridLayout(filtered, 2);
+          } else {
+            // Mobile: 1 column
+            return _buildSingleColumnLayout(filtered);
+          }
+        },
       ),
+    );
+  }
+
+  Widget _buildGridLayout(List<Map<String, dynamic>> projects, int crossAxisCount) {
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 20,
+        mainAxisSpacing: 20,
+        childAspectRatio: 0.75, // Adjust based on content
+      ),
+      itemCount: projects.length,
+      itemBuilder: (context, index) {
+        final project = projects[index];
+        return ProjectCard(
+          title: project['title']!,
+          img: project['img']!,
+          description: project['description']!,
+          isDarkMode: widget.isDarkMode,
+          appStoreLink: project['appStoreLink'],
+          playStoreLink: project['playStoreLink'],
+          gitHubLink: project['githubLink'],
+        );
+      },
+    );
+  }
+
+  Widget _buildSingleColumnLayout(List<Map<String, dynamic>> projects) {
+    return Column(
+      children: projects.asMap().entries.map((entry) {
+        final index = entry.key;
+        final project = entry.value;
+        
+        return TweenAnimationBuilder<double>(
+          duration: Duration(milliseconds: 300 + (index * 100)),
+          tween: Tween(begin: 0.0, end: 1.0),
+          builder: (context, value, child) {
+            return Transform.translate(
+              offset: Offset(0, 20 * (1 - value)),
+              child: Opacity(
+                opacity: value,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 24),
+                  child: ProjectCard(
+                    title: project['title']!,
+                    img: project['img']!,
+                    description: project['description']!,
+                    isDarkMode: widget.isDarkMode,
+                    appStoreLink: project['appStoreLink'],
+                    playStoreLink: project['playStoreLink'],
+                    gitHubLink: project['githubLink'],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 }

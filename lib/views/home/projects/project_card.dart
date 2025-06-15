@@ -90,7 +90,7 @@ class _ProjectCardState extends State<ProjectCard>
               _animationController.reverse();
             },
             child: Container(
-              margin: const EdgeInsets.only(bottom: 20),
+              margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -124,10 +124,13 @@ class _ProjectCardState extends State<ProjectCard>
                       duration: const Duration(milliseconds: 300),
                       transform: Matrix4.identity()
                         ..translate(0.0, _isHovered ? -5.0 : 0.0),
-                      child: Image.asset(
-                        widget.img,
-                        fit: BoxFit.contain,
-                        cacheHeight: 600,
+                      child: AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: Image.asset(
+                          widget.img,
+                          fit: BoxFit.cover,
+                          cacheHeight: 400,
+                        ),
                       ),
                     ),
                   ),
