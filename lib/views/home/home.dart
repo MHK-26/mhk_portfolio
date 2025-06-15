@@ -76,25 +76,44 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _buildSection(
               0,
-              () => ProfileInfoSection(isDarkMode: isDarkMode),
+              () => Container(
+                padding: const EdgeInsets.symmetric(vertical: 40),
+                child: ProfileInfoSection(isDarkMode: isDarkMode),
+              ),
               () => _buildProfileSkeleton(isDarkMode),
             ),
+            _buildSectionDivider(isDarkMode),
             _buildSection(
               1,
-              () => ProjectsPage(isDarkMode: isDarkMode),
+              () => Container(
+                padding: const EdgeInsets.symmetric(vertical: 60),
+                child: ProjectsPage(isDarkMode: isDarkMode),
+              ),
               () => _buildProjectsSkeleton(isDarkMode),
             ),
+            _buildSectionDivider(isDarkMode),
             _buildSection(
               2,
-              () => CertificationsSection(isDarkMode: isDarkMode),
+              () => Container(
+                padding: const EdgeInsets.symmetric(vertical: 60),
+                child: CertificationsSection(isDarkMode: isDarkMode),
+              ),
               () => _buildCertificationsSkeleton(isDarkMode),
             ),
+            _buildSectionDivider(isDarkMode),
             _buildSection(
               3,
-              () => ContactPage(isDarkMode: isDarkMode),
+              () => Container(
+                padding: const EdgeInsets.symmetric(vertical: 60),
+                child: ContactPage(isDarkMode: isDarkMode),
+              ),
               () => _buildContactSkeleton(isDarkMode),
             ),
-            FooterSection(isDarkMode: isDarkMode),
+            _buildSectionDivider(isDarkMode),
+            Container(
+              padding: const EdgeInsets.only(top: 40),
+              child: FooterSection(isDarkMode: isDarkMode),
+            ),
           ],
         ),
       ),
@@ -105,6 +124,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: _sectionLoaded[index] ? content() : skeleton(),
+    );
+  }
+
+  Widget _buildSectionDivider(bool isDarkMode) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 40),
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: isDarkMode 
+            ? AppColors.gold.withOpacity(0.2)
+            : AppColors.gold.withOpacity(0.3),
+      ),
     );
   }
 
