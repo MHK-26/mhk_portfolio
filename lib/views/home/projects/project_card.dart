@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProjectCard extends StatelessWidget {
+class ProjectCard extends StatefulWidget {
   final String title;
   final String img;
   final String description;
@@ -24,107 +24,219 @@ class ProjectCard extends StatelessWidget {
   });
 
   @override
+  State<ProjectCard> createState() => _ProjectCardState();
+}
+
+class _ProjectCardState extends State<ProjectCard> 
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _shadowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.05,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+    
+    _shadowAnimation = Tween<double>(
+      begin: 7.0,
+      end: 20.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _buildNarrowCard(context);
   }
 
   Widget _buildNarrowCard(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isDarkMode
-              ? [Colors.black54, Colors.black87]
-              : [Colors.white, Colors.grey[200]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 1,
-            blurRadius: 7,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              img,
-              fit: BoxFit.contain,
-              // width: 600,
-              cacheHeight: 600,
-            ),
-          ),
-          const SizedBox(height: 20),
-          Text(
-            title,
-            style: GoogleFonts.inter(
-              color: AppColors.primary,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: 600,
-            child: Text(
-              description,
-              style: GoogleFonts.inter(
-                color: isDarkMode ? AppColors.darkWhite : AppColors.black,
-                fontSize: 16,
+    return AnimatedBuilder(
+      animation: _animationController,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: MouseRegion(
+            onEnter: (_) {
+              setState(() {
+                _isHovered = true;
+              });
+              _animationController.forward();
+            },
+            onExit: (_) {
+              setState(() {
+                _isHovered = false;
+              });
+              _animationController.reverse();
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: widget.isDarkMode
+                      ? [Colors.black54, Colors.black87]
+                      : [Colors.white, Colors.grey[200]!],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(15),
+                border: _isHovered 
+                    ? Border.all(color: AppColors.gold.withOpacity(0.3), width: 2)
+                    : null,
+                boxShadow: [
+                  BoxShadow(
+                    color: _isHovered 
+                        ? AppColors.gold.withOpacity(0.2)
+                        : Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: _shadowAnimation.value,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      transform: Matrix4.identity()
+                        ..translate(0.0, _isHovered ? -5.0 : 0.0),
+                      child: Image.asset(
+                        widget.img,
+                        fit: BoxFit.contain,
+                        cacheHeight: 600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 200),
+                    style: GoogleFonts.inter(
+                      color: _isHovered 
+                          ? AppColors.gold 
+                          : AppColors.primary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    child: Text(widget.title),
+                  ),
+                  const SizedBox(height: 10),
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        width: constraints.maxWidth > 600 ? 600 : double.infinity,
+                        child: Text(
+                          widget.description,
+                          style: GoogleFonts.inter(
+                            color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                            fontSize: constraints.maxWidth < 600 ? 14 : 16,
+                            height: 1.5,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  _buildLinks(context),
+                ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          _buildLinks(context),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildLinks(BuildContext context) {
     List<Widget> links = [];
 
-    if (appStoreLink != null) {
+    if (widget.appStoreLink != null) {
       links.add(_buildLinkButton(
-          context, 'App Store', 'assets/icons/apple.png', appStoreLink!));
+          context, 'App Store', 'assets/icons/apple.png', widget.appStoreLink!));
     }
-    if (playStoreLink != null) {
+    if (widget.playStoreLink != null) {
       links.add(_buildLinkButton(
-          context, 'Play Store', 'assets/icons/play.png', playStoreLink!));
+          context, 'Play Store', 'assets/icons/play.png', widget.playStoreLink!));
     }
-    if (gitHubLink != null) {
+    if (widget.gitHubLink != null) {
       links.add(_buildLinkButton(
-          context, 'GitHub', 'assets/icons/github.png', gitHubLink!));
+          context, 'GitHub', 'assets/icons/github.png', widget.gitHubLink!));
     }
 
-    return Wrap(
-      spacing: 10,
-      runSpacing: 10,
-      children: links,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: links.map((link) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: link,
+              );
+            }).toList(),
+          );
+        }
+        return Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: links,
+        );
+      },
     );
   }
 
   Widget _buildLinkButton(
       BuildContext context, String label, String iconPath, String url) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        _launchURL(context, url);
-      },
-      icon: Image.asset(iconPath, width: 20, height: 20),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: isDarkMode ? AppColors.primary : AppColors.primary,
-        foregroundColor: AppColors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        child: ElevatedButton.icon(
+          onPressed: () {
+            _launchURL(context, url);
+          },
+          icon: Image.asset(iconPath, width: 20, height: 20),
+          label: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            elevation: 4,
+            shadowColor: AppColors.gold.withOpacity(0.3),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(25),
+            ),
+          ).copyWith(
+            overlayColor: WidgetStateProperty.all(AppColors.gold.withOpacity(0.1)),
+          ),
         ),
       ),
     );

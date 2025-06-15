@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/views/splash.dart';
 import 'package:provider/provider.dart';
 import 'package:mhk_portfolio_flutter/provider/theme.dart';
@@ -23,8 +24,14 @@ class MyWebPortfolio extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
+          theme: ThemeData.light().copyWith(
+            textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
+            primaryTextTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().primaryTextTheme),
+          ),
+          darkTheme: ThemeData.dark().copyWith(
+            textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+            primaryTextTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().primaryTextTheme),
+          ),
           themeMode:
               themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
           home: SplashScreen(),
