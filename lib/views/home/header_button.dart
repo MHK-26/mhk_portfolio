@@ -13,36 +13,119 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => const Size.fromHeight(80);
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.white,
-      elevation: 0,
-      iconTheme: IconThemeData(
-        color: isDarkMode ? AppColors.darkWhite : AppColors.black,
-      ),
-      title: Text(
-        'MHK\'s Portfolio',
-        style: GoogleFonts.inter(
-          color: isDarkMode ? AppColors.darkWhite : AppColors.black,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDarkMode 
+              ? [AppColors.darkBackground, AppColors.darkBackground.withOpacity(0.95)]
+              : [AppColors.white, AppColors.white.withOpacity(0.95)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      actions: [
-        IconButton(
-            onPressed: () => Provider.of<ThemeProvider>(context, listen: false)
-                .toggleTheme(),
-            icon: Icon(isDarkMode ? Icons.light_mode : Icons.dark_mode))
-        // Switch(
-        //   value: isDarkMode,
-        //   onChanged: (value) {
-        //     Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-        //   },
-        // ),
-      ],
+      child: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: false,
+        iconTheme: IconThemeData(
+          color: isDarkMode ? AppColors.darkWhite : AppColors.black,
+        ),
+        title: Row(
+          children: [
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.gold.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  'M',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'MHK Portfolio',
+                  style: GoogleFonts.poppins(
+                    color: isDarkMode ? AppColors.darkWhite : AppColors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    height: 1.0,
+                  ),
+                ),
+                Text(
+                  'Flutter Developer',
+                  style: GoogleFonts.inter(
+                    color: AppColors.gold,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1.0,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.gold.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: IconButton(
+              onPressed: () => Provider.of<ThemeProvider>(context, listen: false)
+                  .toggleTheme(),
+              icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: Icon(
+                  isDarkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  key: ValueKey(isDarkMode),
+                  color: AppColors.gold,
+                  size: 22,
+                ),
+              ),
+              tooltip: isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode',
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
