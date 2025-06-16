@@ -13,25 +13,41 @@ class InfoSection extends StatefulWidget {
 
 class _InfoSectionState extends State<InfoSection> 
     with TickerProviderStateMixin {
+  late AnimationController _fadeController;
   late AnimationController _slideController;
+  late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-    _slideController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
     
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOut,
+    ));
+    
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.2, 0),
+      begin: const Offset(0, 0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _slideController,
       curve: Curves.easeOutCubic,
     ));
     
+    _fadeController.forward();
     Future.delayed(const Duration(milliseconds: 300), () {
       _slideController.forward();
     });
@@ -39,52 +55,158 @@ class _InfoSectionState extends State<InfoSection>
 
   @override
   void dispose() {
+    _fadeController.dispose();
     _slideController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _slideAnimation,
-      child: Container(
-        padding: const EdgeInsets.all(30),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: widget.isDarkMode
-                ? [Colors.grey[850]!, Colors.grey[800]!]
-                : [Colors.white, Colors.grey[50]!],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          border: Border.all(
-            color: AppColors.gold.withOpacity(0.2),
-            width: 2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.gold.withOpacity(0.1),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(25),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: widget.isDarkMode
+              ? [
+                  Colors.black,
+                  Colors.grey[900]!,
+                  Colors.black,
+                ]
+              : [
+                  Colors.white,
+                  Colors.grey[50]!,
+                  Colors.white,
+                ],
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildProfileSection(),
-              const SizedBox(height: 40),
-              _buildGreetingSection(),
-              const SizedBox(height: 30),
-              _buildAboutSection(),
-              const SizedBox(height: 30),
-              _buildExperienceCards(),
-              const SizedBox(height: 30),
-              _buildTechStackSection(),
+      ),
+      child: Stack(
+        children: [
+          // Background Pattern
+          _buildBackgroundPattern(),
+          
+          // Main Content
+          Center(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                bool isMobile = constraints.maxWidth < 768;
+                return FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isMobile ? 20 : 40,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildAboutHeader(isMobile),
+                          SizedBox(height: isMobile ? 30 : 40),
+                          _buildAboutDescription(isMobile),
+                          SizedBox(height: isMobile ? 30 : 40),
+                          _buildExperienceCards(),
+                          SizedBox(height: isMobile ? 30 : 40),
+                          _buildTechStackSection(),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackgroundPattern() {
+    return Positioned.fill(
+      child: CustomPaint(
+        painter: GridPatternPainter(
+          color: AppColors.gold.withOpacity(0.05),
+          isDarkMode: widget.isDarkMode,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAboutHeader(bool isMobile) {
+    return Column(
+      children: [
+        Text(
+          'About Me',
+          style: GoogleFonts.poppins(
+            color: widget.isDarkMode ? AppColors.white : AppColors.black,
+            fontSize: isMobile ? 32 : 48,
+            fontWeight: FontWeight.bold,
+            height: 1.1,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+            ),
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
             ],
           ),
+          child: Text(
+            'Passionate Software Engineer',
+            style: GoogleFonts.inter(
+              color: Colors.white,
+              fontSize: isMobile ? 14 : 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAboutDescription(bool isMobile) {
+    return Container(
+      constraints: BoxConstraints(maxWidth: isMobile ? 400 : 600),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: GoogleFonts.inter(
+            color: widget.isDarkMode 
+                ? AppColors.darkWhite.withOpacity(0.8)
+                : AppColors.black.withOpacity(0.7),
+            fontSize: isMobile ? 16 : 18,
+            height: 1.6,
+          ),
+          children: [
+            const TextSpan(text: 'I\'m a Software Engineer with '),
+            TextSpan(
+              text: '7+ years',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.gold,
+              ),
+            ),
+            const TextSpan(text: ' of hands-on experience specializing in '),
+            TextSpan(
+              text: 'full-stack development, cloud architecture, and mobile applications',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.gold,
+              ),
+            ),
+            const TextSpan(text: '. I\'m passionate about creating scalable solutions and bringing ideas to life through code.'),
+          ],
         ),
       ),
     );
@@ -213,45 +335,75 @@ class _InfoSectionState extends State<InfoSection>
   }
 
   Widget _buildAboutSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: widget.isDarkMode 
-            ? Colors.black.withOpacity(0.2)
-            : Colors.grey[100],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.gold.withOpacity(0.1),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.rocket_launch,
-                color: AppColors.gold,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'About Me',
-                style: GoogleFonts.poppins(
-                  color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Header
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
                 ),
+                borderRadius: BorderRadius.circular(12),
               ),
-            ],
+              child: const Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'About Me',
+                    style: GoogleFonts.poppins(
+                      color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Software Engineer passionate about innovation',
+                    style: GoogleFonts.inter(
+                      color: widget.isDarkMode 
+                          ? AppColors.darkWhite.withOpacity(0.8)
+                          : AppColors.black.withOpacity(0.7),
+                      fontSize: 16,
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 24),
+        // Content
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: widget.isDarkMode 
+                ? Colors.black.withOpacity(0.2)
+                : Colors.grey[100],
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.gold.withOpacity(0.1),
+            ),
           ),
-          const SizedBox(height: 12),
-          RichText(
+          child: RichText(
             text: TextSpan(
               style: GoogleFonts.inter(
                 color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                fontSize: 14,
-                height: 1.5,
+                fontSize: 16,
+                height: 1.6,
               ),
               children: [
                 const TextSpan(text: 'I\'m a Software Engineer with '),
@@ -274,8 +426,8 @@ class _InfoSectionState extends State<InfoSection>
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -449,4 +601,41 @@ class _InfoSectionState extends State<InfoSection>
           .toList(),
     );
   }
+}
+
+class GridPatternPainter extends CustomPainter {
+  final Color color;
+  final bool isDarkMode;
+
+  GridPatternPainter({required this.color, required this.isDarkMode});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+
+    const spacing = 50.0;
+    
+    // Draw vertical lines
+    for (double x = 0; x < size.width; x += spacing) {
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        paint,
+      );
+    }
+    
+    // Draw horizontal lines
+    for (double y = 0; y < size.height; y += spacing) {
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -103,7 +103,7 @@ class _HeroSectionState extends State<HeroSection>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildWelcomeTitle(isMobile),
+                          _buildProfileSection(isMobile),
                           SizedBox(height: isMobile ? 30 : 40),
                           _buildAnimatedRole(isMobile),
                           SizedBox(height: isMobile ? 30 : 40),
@@ -136,22 +136,54 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildWelcomeTitle(bool isMobile) {
+  Widget _buildProfileSection(bool isMobile) {
     return Column(
       children: [
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gold.withOpacity(0.4),
+                AppColors.gold.withOpacity(0.1),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.3),
+                blurRadius: 30,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(8),
+          child: Container(
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(6),
+            child: CircleAvatar(
+              radius: isMobile ? 50 : 60,
+              backgroundImage: const AssetImage('assets/imgs/pp.jpeg'),
+              backgroundColor: Colors.transparent,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
         Text(
-          'Welcome to my Portfolio',
+          'Mohammad Hisham',
           style: GoogleFonts.poppins(
             color: widget.isDarkMode ? AppColors.white : AppColors.black,
-            fontSize: isMobile ? 32 : 48,
+            fontSize: isMobile ? 28 : 36,
             fontWeight: FontWeight.bold,
             height: 1.1,
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
@@ -166,10 +198,10 @@ class _HeroSectionState extends State<HeroSection>
             ],
           ),
           child: Text(
-            'Creating Digital Solutions',
+            'Senior Software Engineer',
             style: GoogleFonts.inter(
               color: Colors.white,
-              fontSize: isMobile ? 14 : 18,
+              fontSize: isMobile ? 14 : 16,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -177,6 +209,7 @@ class _HeroSectionState extends State<HeroSection>
       ],
     );
   }
+
 
   Widget _buildAnimatedRole(bool isMobile) {
     return SizedBox(
@@ -221,9 +254,9 @@ class _HeroSectionState extends State<HeroSection>
 
   Widget _buildDescription(bool isMobile) {
     return Container(
-      constraints: BoxConstraints(maxWidth: isMobile ? 400 : 600),
+      constraints: BoxConstraints(maxWidth: isMobile ? 350 : 500),
       child: Text(
-        'Passionate about creating innovative solutions that make a difference. With 7+ years of experience in full-stack development, cloud architecture, and product management.',
+        'Building innovative solutions with 7+ years of experience in full-stack development and cloud architecture.',
         style: GoogleFonts.inter(
           color: widget.isDarkMode 
               ? AppColors.darkWhite.withOpacity(0.8)
@@ -243,16 +276,16 @@ class _HeroSectionState extends State<HeroSection>
       alignment: WrapAlignment.center,
       children: [
         _buildActionButton(
-          'View My Work',
-          Icons.work,
+          'View Projects',
+          Icons.work_outline,
           AppColors.gold,
           Colors.white,
           true,
           isMobile,
         ),
         _buildActionButton(
-          'Get In Touch',
-          Icons.mail,
+          'Contact Me',
+          Icons.person_outline,
           Colors.transparent,
           widget.isDarkMode ? AppColors.white : AppColors.black,
           false,

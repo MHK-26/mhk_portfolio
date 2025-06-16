@@ -160,6 +160,181 @@ class _ContactSectionState extends State<ContactSection>
   }
 
 
+  Widget _buildProfileSection() {
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(milliseconds: 800),
+      tween: Tween(begin: 0.0, end: 1.0),
+      builder: (context, value, child) {
+        return Transform.translate(
+          offset: Offset(0, 30 * (1 - value)),
+          child: Opacity(
+            opacity: value,
+            child: Column(
+              children: [
+                // Profile Picture and Name
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.gold.withOpacity(0.4),
+                        AppColors.gold.withOpacity(0.1),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.gold.withOpacity(0.3),
+                        blurRadius: 30,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                    ),
+                    padding: const EdgeInsets.all(6),
+                    child: const CircleAvatar(
+                      radius: 80,
+                      backgroundImage: AssetImage('assets/imgs/pp.jpeg'),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  'Mohammad Hisham',
+                  style: GoogleFonts.poppins(
+                    color: widget.isDarkMode ? AppColors.white : AppColors.black,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.gold.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Senior Software Engineer',
+                    style: GoogleFonts.inter(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                // Contact Links
+                _buildContactLinks(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContactLinks() {
+    return Column(
+      children: _contactMethods.map((contact) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          child: InkWell(
+            onTap: contact['action'] != null 
+                ? () => _launchURL(contact['action'])
+                : null,
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: widget.isDarkMode
+                      ? [Colors.grey[850]!, Colors.grey[800]!]
+                      : [Colors.white, Colors.grey[50]!],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.gold.withOpacity(0.2),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: contact['color'].withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      contact['icon'],
+                      color: contact['color'],
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          contact['title'],
+                          style: GoogleFonts.inter(
+                            color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          contact['subtitle'],
+                          style: GoogleFonts.inter(
+                            color: widget.isDarkMode 
+                                ? AppColors.darkWhite.withOpacity(0.7)
+                                : AppColors.black.withOpacity(0.6),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (contact['action'] != null)
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: AppColors.gold,
+                      size: 16,
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildContactMethods() {
     return TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 1000),

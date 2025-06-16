@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:mhk_portfolio_flutter/views/home/hero/hero_section.dart';
-import 'package:mhk_portfolio_flutter/views/home/info/profile_section.dart';
+import 'package:mhk_portfolio_flutter/views/home/info/info_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/navigation/navigation_bar.dart';
 import 'package:mhk_portfolio_flutter/views/home/projects/projects_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/certifications/certifications_section.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final ScrollController _scrollController = ScrollController();
   String _currentSection = 'hero';
+  bool _isLoading = true;
   
   final Map<String, GlobalKey> _sectionKeys = {
     'hero': GlobalKey(),
@@ -30,6 +32,17 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    _initializeApp();
+  }
+
+  void _initializeApp() async {
+    // Simulate loading time
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -74,6 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDarkMode = themeProvider.isDarkMode;
 
+    if (_isLoading) {
+      return _buildLoadingScreen(isDarkMode);
+    }
+
     return Scaffold(
       backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.background,
       body: Stack(
@@ -82,6 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
             controller: _scrollController,
             child: Column(
               children: [
+                // Add padding for navbar
+                const SizedBox(height: 80),
+                
                 // Hero and Profile Section (Same Height)
                 Container(
                   key: _sectionKeys['hero'],
@@ -94,11 +114,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             SizedBox(
                               height: MediaQuery.of(context).size.height,
-                              child: ProfileInfoSection(isDarkMode: isDarkMode, showHeader: false),
+                              child: HeroSection(isDarkMode: isDarkMode),
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.8,
-                              child: HeroSection(isDarkMode: isDarkMode),
+                              height: MediaQuery.of(context).size.height,
+                              child: InfoSection(isDarkMode: isDarkMode),
                             ),
                           ],
                         );
@@ -112,9 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: HeroSection(isDarkMode: isDarkMode),
                               ),
                               
-                              // Profile Section
+                              // Info Section
                               Expanded(
-                                child: ProfileInfoSection(isDarkMode: isDarkMode, showHeader: false),
+                                child: InfoSection(isDarkMode: isDarkMode),
                               ),
                             ],
                           ),
@@ -179,6 +199,82 @@ class _HomeScreenState extends State<HomeScreen> {
         color: isDarkMode 
             ? AppColors.gold.withOpacity(0.1)
             : AppColors.gold.withOpacity(0.2),
+      ),
+    );
+  }
+
+  Widget _buildLoadingScreen(bool isDarkMode) {
+    return Scaffold(
+      backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.background,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDarkMode
+                ? [Colors.black, Colors.grey[900]!, Colors.black]
+                : [Colors.white, Colors.grey[50]!, Colors.white],
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.gold.withOpacity(0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Text(
+                    'M',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // Loading indicator
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
+                  strokeWidth: 3,
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              // Loading text
+              Text(
+                'Loading Portfolio...',
+                style: GoogleFonts.inter(
+                  color: isDarkMode 
+                      ? AppColors.darkWhite.withOpacity(0.8)
+                      : AppColors.black.withOpacity(0.7),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
