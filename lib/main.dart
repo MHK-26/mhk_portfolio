@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mhk_portfolio_flutter/views/splash.dart';
+import 'package:mhk_portfolio_flutter/views/home/home.dart';
 import 'package:provider/provider.dart';
 import 'package:mhk_portfolio_flutter/provider/theme.dart';
 
@@ -34,7 +34,7 @@ class MyWebPortfolio extends StatelessWidget {
           ),
           themeMode:
               themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          home: SplashScreen(),
+          home: HomeScreen(),
         );
       },
     );

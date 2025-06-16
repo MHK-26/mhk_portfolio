@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initializeApp() async {
-    // Simulate loading time
-    await Future.delayed(const Duration(milliseconds: 1500));
+    // Simulate loading time for awesome effect
+    await Future.delayed(const Duration(milliseconds: 2500));
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -216,66 +216,210 @@ class _HomeScreenState extends State<HomeScreen> {
                 : [Colors.white, Colors.grey[50]!, Colors.white],
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+        child: Stack(
+          children: [
+            // Background Pattern
+            Positioned.fill(
+              child: CustomPaint(
+                painter: GridPatternPainter(
+                  color: AppColors.gold.withOpacity(0.03),
+                  isDarkMode: isDarkMode,
+                ),
+              ),
+            ),
+            
+            // Main Loading Content
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Animated Logo with Pulse Effect
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 1500),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 800),
+                        width: 100 + (20 * value),
+                        height: 100 + (20 * value),
+                        decoration: BoxDecoration(
+                          gradient: RadialGradient(
+                            colors: [
+                              AppColors.gold,
+                              AppColors.gold.withOpacity(0.8),
+                              AppColors.gold.withOpacity(0.6),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(25 + (5 * value)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.gold.withOpacity(0.4 * value),
+                              blurRadius: 30 + (20 * value),
+                              offset: const Offset(0, 10),
+                            ),
+                            BoxShadow(
+                              color: AppColors.gold.withOpacity(0.2 * value),
+                              blurRadius: 60 + (40 * value),
+                              offset: const Offset(0, 20),
+                            ),
+                          ],
+                        ),
+                        child: Center(
+                          child: Text(
+                            'MH',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 36 + (8 * value),
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.gold.withOpacity(0.3),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'M',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  
+                  const SizedBox(height: 50),
+                  
+                  // Animated Welcome Text
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 2000),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 30 * (1 - value)),
+                        child: Opacity(
+                          opacity: value,
+                          child: Column(
+                            children: [
+                              Text(
+                                'Mohammad Hisham',
+                                style: GoogleFonts.poppins(
+                                  color: isDarkMode ? AppColors.darkWhite : AppColors.black,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  'Senior Software Engineer',
+                                  style: GoogleFonts.inter(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
+                  
+                  const SizedBox(height: 60),
+                  
+                  // Loading Progress
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 2500),
+                    tween: Tween(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Column(
+                        children: [
+                          Container(
+                            width: 200,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                            child: FractionallySizedBox(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: value,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
+                                  ),
+                                  borderRadius: BorderRadius.circular(2),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppColors.gold.withOpacity(0.5),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Loading Portfolio... ${(value * 100).toInt()}%',
+                            style: GoogleFonts.inter(
+                              color: isDarkMode 
+                                  ? AppColors.darkWhite.withOpacity(0.8)
+                                  : AppColors.black.withOpacity(0.7),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
-              const SizedBox(height: 32),
-              
-              // Loading indicator
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.gold),
-                  strokeWidth: 3,
-                ),
-              ),
-              const SizedBox(height: 24),
-              
-              // Loading text
-              Text(
-                'Loading Portfolio...',
-                style: GoogleFonts.inter(
-                  color: isDarkMode 
-                      ? AppColors.darkWhite.withOpacity(0.8)
-                      : AppColors.black.withOpacity(0.7),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class GridPatternPainter extends CustomPainter {
+  final Color color;
+  final bool isDarkMode;
+
+  GridPatternPainter({required this.color, required this.isDarkMode});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+
+    const spacing = 50.0;
+    
+    // Draw vertical lines
+    for (double x = 0; x < size.width; x += spacing) {
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        paint,
+      );
+    }
+    
+    // Draw horizontal lines
+    for (double y = 0; y < size.height; y += spacing) {
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

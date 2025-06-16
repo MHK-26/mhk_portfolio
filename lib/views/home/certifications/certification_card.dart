@@ -92,6 +92,7 @@ class _CertificationCardState extends State<CertificationCard>
               _animationController.reverse();
             },
             child: Container(
+              height: 420, // Fixed height for consistency
               margin: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -120,11 +121,10 @@ class _CertificationCardState extends State<CertificationCard>
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Image Section
+                  // Image Section - Full width
                   Container(
-                    height: 140,
+                    height: 160,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
@@ -138,44 +138,57 @@ class _CertificationCardState extends State<CertificationCard>
                         ],
                       ),
                     ),
-                    child: Center(
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(18),
+                        topRight: Radius.circular(18),
+                      ),
                       child: Container(
-                        width: 100,
-                        height: 100,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
+                        padding: const EdgeInsets.all(20),
+                        child: Center(
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              maxWidth: 120,
+                              maxHeight: 120,
                             ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            widget.img,
-                            fit: BoxFit.contain,
-                            width: 76,
-                            height: 76,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: AppColors.gold.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
                                 ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.workspace_premium,
-                                    color: AppColors.gold,
-                                    size: 30,
-                                  ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                child: Image.asset(
+                                  widget.img,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gold.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.workspace_premium,
+                                          color: AppColors.gold,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -183,12 +196,11 @@ class _CertificationCardState extends State<CertificationCard>
                   ),
                   
                   // Content Section
-                  Flexible(
+                  Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
                         children: [
                           // Category Badge
                           Container(
@@ -268,57 +280,62 @@ class _CertificationCardState extends State<CertificationCard>
                           
                           const SizedBox(height: 12),
                           
-                          // Skills
-                          Wrap(
-                            spacing: 6,
-                            runSpacing: 4,
-                            children: widget.skills.take(3).map((skill) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: AppColors.gold.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(6),
+                          // Skills - Flexible spacing
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Wrap(
+                                  spacing: 6,
+                                  runSpacing: 4,
+                                  children: widget.skills.take(3).map((skill) {
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gold.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        skill,
+                                        style: GoogleFonts.inter(
+                                          color: AppColors.gold,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                                 ),
-                                child: Text(
-                                  skill,
-                                  style: GoogleFonts.inter(
-                                    color: AppColors.gold,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
+                                const Spacer(),
+                                // View Button
+                                if (widget.certificationLink != null)
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 42,
+                                    child: ElevatedButton.icon(
+                                      onPressed: () => _launchURL(context, widget.certificationLink!),
+                                      icon: const Icon(Icons.open_in_new, size: 18),
+                                      label: Text(
+                                        'View Certificate',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.gold,
+                                        foregroundColor: Colors.white,
+                                        elevation: 2,
+                                        shadowColor: AppColors.gold.withOpacity(0.3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          
-                          const SizedBox(height: 12),
-                          
-                          // View Button
-                          if (widget.certificationLink != null)
-                            SizedBox(
-                              width: double.infinity,
-                              height: 42,
-                              child: ElevatedButton.icon(
-                                onPressed: () => _launchURL(context, widget.certificationLink!),
-                                icon: const Icon(Icons.open_in_new, size: 18),
-                                label: Text(
-                                  'View Certificate',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.gold,
-                                  foregroundColor: Colors.white,
-                                  elevation: 2,
-                                  shadowColor: AppColors.gold.withOpacity(0.3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                              ),
+                              ],
                             ),
+                          ),
                         ],
                       ),
                     ),

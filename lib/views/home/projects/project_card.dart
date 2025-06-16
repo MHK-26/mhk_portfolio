@@ -90,6 +90,7 @@ class _ProjectCardState extends State<ProjectCard>
               _animationController.reverse();
             },
             child: Container(
+              height: 450, // Fixed height for consistency
               margin: const EdgeInsets.all(8),
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -169,23 +170,31 @@ class _ProjectCardState extends State<ProjectCard>
                     child: Text(widget.title),
                   ),
                   const SizedBox(height: 10),
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SizedBox(
-                        width: constraints.maxWidth > 600 ? 600 : double.infinity,
-                        child: Text(
-                          widget.description,
-                          style: GoogleFonts.inter(
-                            color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                            fontSize: constraints.maxWidth < 600 ? 14 : 16,
-                            height: 1.5,
-                          ),
-                        ),
-                      );
-                    },
+                  Expanded(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                widget.description,
+                                style: GoogleFonts.inter(
+                                  color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                                  fontSize: constraints.maxWidth < 600 ? 14 : 16,
+                                  height: 1.5,
+                                ),
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildLinks(context),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  _buildLinks(context),
                 ],
               ),
             ),
