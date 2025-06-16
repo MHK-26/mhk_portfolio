@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:mhk_portfolio_flutter/views/home/projects/project_card.dart';
+import 'package:mhk_portfolio_flutter/utils/background_painter.dart';
 
 class ProjectsPage extends StatefulWidget {
   final bool isDarkMode;
@@ -30,7 +31,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'Custom Social Media App',
       'img': 'assets/projects/socialsd.png',
       'description':
-          'Fully functioning Instagram clone with custom UI, developed using Flutter and Dart, utilizing the Provider State management package and Firebase for the backend.',
+          'Full-stack social media app built with Flutter and Firebase. Features real-time messaging using Firestore, image upload/storage, user authentication, and push notifications. Implements BLoC state management and custom animations for smooth UX.',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': 'https://github.com/MHK-26',
@@ -40,7 +41,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'Rhodaa - Car Renting App',
       'img': 'assets/projects/rhodaa.png',
       'description':
-          'Rhodaa is a car rental app that operates on a shared economy model, connecting car owners and renters seamlessly. The app enables car owners to list their vehicles for rent, allowing them to generate income from their idle assets. At the same time, users looking to rent a car can browse through available options, specifying their requirements and comparing prices to find the best match.\nDeveloped using Flutter, Dart, Firebase, Laravel, NodeJS.',
+          'P2P car rental platform with Flutter frontend and PHP Laravel backend. Integrated Stripe payments, Google Maps API for location services, real-time GPS tracking, and automated booking system. Features admin dashboard, rating system, and SMS notifications.',
       'appStoreLink': 'https://apps.apple.com/us/app/rhodaa/id1603408711',
       'playStoreLink':
           'https://play.google.com/store/apps/details?id=com.smartcare.zoalcar',
@@ -51,7 +52,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'My Expenses Tracker',
       'img': 'assets/projects/expenses.png',
       'description':
-          'Personal Expenses Tracker! Track my daily expenses easily. Developed using Flutter, Dart, Bloc State Management Package, Sqflite DB.',
+          'Personal finance tracker built with Flutter using SQLite for local storage. Implements clean architecture with BLoC pattern, data visualization with charts, category-based expense tracking, and export functionality to CSV/PDF.',
       'appStoreLink': null,
       'playStoreLink':
           'https://play.google.com/store/apps/details?id=com.mhk26.expenses_app',
@@ -62,7 +63,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'AI Bot using Gemini',
       'img': 'assets/projects/app.png',
       'description':
-          'an AI-powered chat bot that leverages Google\'s Gemini model to provide real-time responses. The app features a user-friendly interface where users can send messages and receive instant replies. It utilizes state management to handle message flows and ensure a smooth user experience. The app also includes error handling and UI feedback to enhance usability.',
+          'AI chatbot app integrating Google Gemini API. Features conversation history with SQLite, markdown rendering for AI responses, typing indicators, error handling with retry logic, and responsive chat UI with message bubbles.',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': 'https://github.com/MHK-26/flutter_AI_Bot',
@@ -72,7 +73,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'ATS Friendly Resume Generator',
       'img': 'assets/projects/resume.png',
       'description':
-          'Generate a fully parsed resume easily and with simple steps. Developed using Flutter, Dart, BLoC State management package, and Sqflite for Database.',
+          'Resume builder with ATS optimization features. Built with Flutter, includes PDF generation using pdf package, template selection, real-time preview, and keyword density analysis. Supports multiple export formats and responsive design.',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': 'https://github.com/MHK-26',
@@ -82,7 +83,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'FPL Captain Picker',
       'img': 'assets/projects/fpl.png',
       'description':
-          'A Fantasy Premier League Captain Picker App with a lot of features: Wheel of Fortune captain picker, teams view, adding friend teams, previous captains analysis, top 10 captain picks for next Gameweek, etc. Developed using Flutter, Dart, Provider State management package, and Official FPL API.',
+          'Fantasy Premier League helper app with captain selection wheel. Integrates FPL official API for live data, implements spin wheel animation, player statistics dashboard, and team comparison features. Built with Flutter and HTTP package.',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': 'https://github.com/MHK-26',
@@ -91,7 +92,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
     {
       'title': 'Private Project',
       'img': 'assets/projects/aa.png',
-      'description': 'No information.',
+      'description': 'Athlete Arena',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': null,
@@ -101,7 +102,7 @@ class _ProjectsPageState extends State<ProjectsPage> {
       'title': 'This website :D',
       'img': 'assets/projects/web.png',
       'description':
-          'My online portfolio showcasing selected pieces of my work.\nDeveloped using Flutter, Dart. Optimized for web and mobile, and with night mode.',
+          'Personal portfolio website built with Flutter Web. Features responsive design, dark/light theme switching, smooth animations using AnimatedTextKit, and optimized performance. Deployed with GitHub Pages and custom domain setup.',
       'appStoreLink': null,
       'playStoreLink': null,
       'githubLink': 'https://github.com/MHK-26/mhk_portfolio',
@@ -135,54 +136,87 @@ class _ProjectsPageState extends State<ProjectsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double horizontalPadding = constraints.maxWidth < 600 ? 16 : 20;
-        double fontSize = constraints.maxWidth < 600 ? 28 : 36;
-        
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 20),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: widget.isDarkMode
+              ? [
+                  Colors.black,
+                  Colors.grey[900]!,
+                  Colors.black,
+                ]
+              : [
+                  Colors.white,
+                  Colors.grey[50]!,
+                  Colors.white,
+                ],
+        ),
+      ),
+      child: Stack(
+        children: [
+          // Background Pattern
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                color: AppColors.gold.withOpacity(0.03),
+                isDarkMode: widget.isDarkMode,
+              ),
+            ),
+          ),
+          // Main Content
+          LayoutBuilder(
+            builder: (context, constraints) {
+              double horizontalPadding = constraints.maxWidth < 600 ? 16 : 20;
+              double fontSize = constraints.maxWidth < 600 ? 28 : 36;
+              
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Projects',
-                      style: GoogleFonts.inter(
-                        color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            offset: const Offset(2, 2),
-                            blurRadius: 4,
-                            color: Colors.black.withOpacity(0.3),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Projects',
+                            style: GoogleFonts.inter(
+                              color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  offset: const Offset(2, 2),
+                                  blurRadius: 4,
+                                  color: Colors.black.withOpacity(0.3),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Explore my featured projects below - each one represents a unique challenge solved with innovation and precision.\nDiscover more on my GitHub for the complete development journey.',
+                            style: GoogleFonts.inter(
+                              color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
+                              fontSize: constraints.maxWidth < 600 ? 14 : 15,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'These are selected projects,\nYou can find my other projects on my GitHub account.',
-                      style: GoogleFonts.inter(
-                        color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                        fontSize: constraints.maxWidth < 600 ? 14 : 15,
-                      ),
-                    ),
+                    _buildSearchAndFilter(constraints),
+                    const SizedBox(height: 20),
+                    buildMobileContent()
                   ],
                 ),
-              ),
-              _buildSearchAndFilter(constraints),
-              const SizedBox(height: 20),
-              buildMobileContent()
-            ],
+              );
+            },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -331,16 +365,16 @@ class _ProjectsPageState extends State<ProjectsPage> {
       child: LayoutBuilder(
         key: ValueKey(filtered.length),
         builder: (context, constraints) {
-          // Responsive grid layout
-          if (constraints.maxWidth > 1200) {
-            // Desktop: 2 columns
-            return _buildGridLayout(filtered, 2);
-          } else if (constraints.maxWidth > 800) {
-            // Tablet: 2 columns but smaller
+          // Enhanced responsive grid layout
+          if (constraints.maxWidth > 1400) {
+            // Large Desktop: 3 columns
+            return _buildGridLayout(filtered, 3);
+          } else if (constraints.maxWidth > 900) {
+            // Desktop/Tablet: 2 columns
             return _buildGridLayout(filtered, 2);
           } else {
-            // Mobile: 1 column
-            return _buildSingleColumnLayout(filtered);
+            // Mobile: 1 column with enhanced animations
+            return _buildEnhancedSingleColumnLayout(filtered);
           }
         },
       ),
@@ -373,37 +407,43 @@ class _ProjectsPageState extends State<ProjectsPage> {
     );
   }
 
-  Widget _buildSingleColumnLayout(List<Map<String, dynamic>> projects) {
-    return Column(
-      children: projects.asMap().entries.map((entry) {
-        final index = entry.key;
-        final project = entry.value;
-        
-        return TweenAnimationBuilder<double>(
-          duration: Duration(milliseconds: 300 + (index * 100)),
-          tween: Tween(begin: 0.0, end: 1.0),
-          builder: (context, value, child) {
-            return Transform.translate(
-              offset: Offset(0, 20 * (1 - value)),
-              child: Opacity(
-                opacity: value,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 24),
-                  child: ProjectCard(
-                    title: project['title']!,
-                    img: project['img']!,
-                    description: project['description']!,
-                    isDarkMode: widget.isDarkMode,
-                    appStoreLink: project['appStoreLink'],
-                    playStoreLink: project['playStoreLink'],
-                    gitHubLink: project['githubLink'],
+  Widget _buildEnhancedSingleColumnLayout(List<Map<String, dynamic>> projects) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        children: projects.asMap().entries.map((entry) {
+          final index = entry.key;
+          final project = entry.value;
+          
+          return TweenAnimationBuilder<double>(
+            duration: Duration(milliseconds: 400 + (index * 150)),
+            tween: Tween(begin: 0.0, end: 1.0),
+            builder: (context, value, child) {
+              return Transform.translate(
+                offset: Offset(-20 * (1 - value), 30 * (1 - value)),
+                child: Transform.scale(
+                  scale: 0.9 + (0.1 * value),
+                  child: Opacity(
+                    opacity: value,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 32),
+                      child: ProjectCard(
+                        title: project['title']!,
+                        img: project['img']!,
+                        description: project['description']!,
+                        isDarkMode: widget.isDarkMode,
+                        appStoreLink: project['appStoreLink'],
+                        playStoreLink: project['playStoreLink'],
+                        gitHubLink: project['githubLink'],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      }).toList(),
+              );
+            },
+          );
+        }).toList(),
+      ),
     );
   }
 }

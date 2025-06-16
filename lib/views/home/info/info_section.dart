@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/utils/background_painter.dart';
 
 class InfoSection extends StatefulWidget {
   final bool isDarkMode;
@@ -83,8 +84,15 @@ class _InfoSectionState extends State<InfoSection>
       ),
       child: Stack(
         children: [
-          // Background Pattern
-          _buildBackgroundPattern(),
+          // Background Pattern using utility
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                color: AppColors.gold.withOpacity(0.05),
+                isDarkMode: widget.isDarkMode,
+              ),
+            ),
+          ),
           
           // Main Content
           Center(
@@ -122,16 +130,6 @@ class _InfoSectionState extends State<InfoSection>
     );
   }
 
-  Widget _buildBackgroundPattern() {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: GridPatternPainter(
-          color: AppColors.gold.withOpacity(0.05),
-          isDarkMode: widget.isDarkMode,
-        ),
-      ),
-    );
-  }
 
   Widget _buildAboutHeader(bool isMobile) {
     return Column(
@@ -146,31 +144,7 @@ class _InfoSectionState extends State<InfoSection>
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
-            ),
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.gold.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Text(
-            'Passionate Software Engineer',
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: isMobile ? 14 : 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+       
       ],
     );
   }
@@ -436,7 +410,7 @@ class _InfoSectionState extends State<InfoSection>
       {
         'icon': Icons.code,
         'title': 'Backend Development',
-        'skills': 'PHP • Laravel • Python • Java • APIs',
+        'skills': 'PHP • Laravel • Python • Java • SpringBoot • APIs',
       },
       {
         'icon': Icons.phone_android,
@@ -601,41 +575,4 @@ class _InfoSectionState extends State<InfoSection>
           .toList(),
     );
   }
-}
-
-class GridPatternPainter extends CustomPainter {
-  final Color color;
-  final bool isDarkMode;
-
-  GridPatternPainter({required this.color, required this.isDarkMode});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1;
-
-    const spacing = 50.0;
-    
-    // Draw vertical lines
-    for (double x = 0; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-    
-    // Draw horizontal lines
-    for (double y = 0; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

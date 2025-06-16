@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mhk_portfolio_flutter/widgets/image_popup.dart';
 
 class CertificationCard extends StatefulWidget {
   final String title;
@@ -92,250 +93,344 @@ class _CertificationCardState extends State<CertificationCard>
               _animationController.reverse();
             },
             child: Container(
-              height: 420, // Fixed height for consistency
-              margin: const EdgeInsets.all(8),
+              height: 420, // Optimized height for content
+              margin: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: widget.isDarkMode
-                      ? [Colors.grey[850]!, Colors.grey[800]!]
-                      : [Colors.white, Colors.grey[50]!],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
+                  colors: widget.isDarkMode
+                      ? [
+                          Colors.grey[900]!,
+                          Colors.grey[850]!,
+                          Colors.grey[900]!,
+                        ]
+                      : [
+                          Colors.white,
+                          Colors.grey[50]!,
+                          Colors.white,
+                        ],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: _isHovered 
-                      ? AppColors.gold.withOpacity(0.5)
-                      : AppColors.gold.withOpacity(0.1),
+                      ? AppColors.gold.withOpacity(0.7)
+                      : AppColors.gold.withOpacity(0.15),
                   width: 2,
                 ),
                 boxShadow: [
                   BoxShadow(
                     color: _isHovered 
-                        ? AppColors.gold.withOpacity(0.2)
-                        : Colors.black.withOpacity(0.1),
+                        ? AppColors.gold.withOpacity(0.3)
+                        : (widget.isDarkMode ? Colors.black45 : Colors.grey.withOpacity(0.15)),
+                    spreadRadius: _isHovered ? 6 : 0,
                     blurRadius: _shadowAnimation.value,
-                    offset: const Offset(0, 4),
+                    offset: Offset(0, _isHovered ? 10 : 4),
                   ),
+                  if (_isHovered)
+                    BoxShadow(
+                      color: AppColors.gold.withOpacity(0.15),
+                      spreadRadius: 12,
+                      blurRadius: 40,
+                      offset: const Offset(0, 16),
+                    ),
                 ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Image Section - Full width
-                  Container(
-                    height: 160,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      ),
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.gold.withOpacity(0.1),
-                          AppColors.gold.withOpacity(0.05),
-                        ],
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(18),
-                        topRight: Radius.circular(18),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        child: Center(
-                          child: Container(
-                            constraints: const BoxConstraints(
-                              maxWidth: 120,
-                              maxHeight: 120,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Container(
-                                width: double.infinity,
-                                height: double.infinity,
-                                padding: const EdgeInsets.all(12),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(22),
+                child: Column(
+                  children: [
+                    // Full Width Certificate Image Header
+                    Container(
+                      height: 120,
+                      width: double.infinity,
+                      child: GestureDetector(
+                        onTap: () => ImagePopup.show(
+                          context,
+                          widget.img,
+                          widget.title,
+                          widget.isDarkMode,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(22),
+                            topRight: Radius.circular(22),
+                          ),
+                          child: Stack(
+                            children: [
+                              // Full width image background
+                              Positioned.fill(
                                 child: Image.asset(
                                   widget.img,
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Container(
                                       decoration: BoxDecoration(
-                                        color: AppColors.gold.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(8),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            AppColors.gold.withOpacity(0.3),
+                                            AppColors.gold.withOpacity(0.1),
+                                          ],
+                                        ),
                                       ),
                                       child: Center(
                                         child: Icon(
                                           Icons.workspace_premium,
                                           color: AppColors.gold,
-                                          size: 40,
+                                          size: 48,
                                         ),
                                       ),
                                     );
                                   },
                                 ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  // Content Section
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Category Badge
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: AppColors.gold.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: AppColors.gold.withOpacity(0.3),
-                              ),
-                            ),
-                            child: Text(
-                              widget.category,
-                              style: GoogleFonts.inter(
-                                color: AppColors.gold,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                          
-                          const SizedBox(height: 12),
-                          
-                          // Title
-                          Text(
-                            widget.title,
-                            style: GoogleFonts.poppins(
-                              color: widget.isDarkMode ? AppColors.darkWhite : AppColors.black,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              height: 1.3,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          
-                          const SizedBox(height: 8),
-                          
-                          // Issuer and Year
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  widget.issuer,
-                                  style: GoogleFonts.inter(
-                                    color: widget.isDarkMode 
-                                        ? AppColors.darkWhite.withOpacity(0.8)
-                                        : AppColors.black.withOpacity(0.7),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                              // Gradient overlay for better text readability
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.black.withOpacity(0.3),
+                                        Colors.black.withOpacity(0.6),
+                                      ],
+                                    ),
                                   ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: widget.isDarkMode 
-                                      ? Colors.grey[700]
-                                      : Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  widget.year,
-                                  style: GoogleFonts.inter(
-                                    color: widget.isDarkMode 
-                                        ? AppColors.darkWhite
-                                        : AppColors.black,
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
+                              // Zoom icon on hover
+                              if (_isHovered)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.7),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Icon(
+                                      Icons.zoom_in,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
                                   ),
+                                ),
+                              // Certificate info overlay
+                              Positioned(
+                                bottom: 16,
+                                left: 16,
+                                right: 16,
+                                child: Row(
+                                  children: [
+                                    // Category badge
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            AppColors.gold,
+                                            AppColors.gold.withOpacity(0.8),
+                                          ],
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        widget.category,
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    // Year text
+                                    Text(
+                                      widget.year,
+                                      style: GoogleFonts.inter(
+                                        color: Colors.white.withOpacity(0.9),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
                           ),
-                          
-                          const SizedBox(height: 12),
-                          
-                          // Skills - Flexible spacing
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Wrap(
-                                  spacing: 6,
-                                  runSpacing: 4,
-                                  children: widget.skills.take(3).map((skill) {
-                                    return Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.gold.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Text(
-                                        skill,
-                                        style: GoogleFonts.inter(
-                                          color: AppColors.gold,
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
+                        ),
+                      ),
+                    ),
+                  
+                    // Enhanced Content Section
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title with better typography
+                            AnimatedDefaultTextStyle(
+                              duration: const Duration(milliseconds: 300),
+                              style: GoogleFonts.poppins(
+                                color: _isHovered 
+                                    ? AppColors.gold
+                                    : (widget.isDarkMode ? AppColors.darkWhite : AppColors.black),
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
+                              ),
+                              child: Text(
+                                widget.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            
+                            const SizedBox(height: 8),
+                            
+                            // Animated separator
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              width: _isHovered ? 50 : 30,
+                              height: 2,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    AppColors.gold,
+                                    AppColors.gold.withOpacity(0.3),
+                                  ],
                                 ),
-                                const Spacer(),
-                                // View Button
-                                if (widget.certificationLink != null)
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 42,
-                                    child: ElevatedButton.icon(
-                                      onPressed: () => _launchURL(context, widget.certificationLink!),
-                                      icon: const Icon(Icons.open_in_new, size: 18),
-                                      label: Text(
-                                        'View Certificate',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
+                                borderRadius: BorderRadius.circular(1),
+                              ),
+                            ),
+                            
+                            const SizedBox(height: 8),
+                            
+                            // Issuer with icon
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(6),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.gold.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    Icons.school,
+                                    size: 16,
+                                    color: AppColors.gold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    widget.issuer,
+                                    style: GoogleFonts.inter(
+                                      color: widget.isDarkMode 
+                                          ? AppColors.darkWhite.withOpacity(0.85)
+                                          : AppColors.black.withOpacity(0.75),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            
+                            const SizedBox(height: 12),
+                            
+                            // Simplified Skills and Action section
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Skills section
+                                  ConstrainedBox(
+                                    constraints: const BoxConstraints(maxHeight: 40),
+                                    child: Wrap(
+                                      spacing: 6,
+                                      runSpacing: 4,
+                                      children: widget.skills.take(3).map((skill) {
+                                        return Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.gold.withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(6),
+                                            border: Border.all(
+                                              color: AppColors.gold.withOpacity(0.2),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            skill,
+                                            style: GoogleFonts.inter(
+                                              color: AppColors.gold,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  
+                                  // Simplified action button
+                                  if (widget.certificationLink != null)
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 36,
+                                      child: ElevatedButton(
+                                        onPressed: () => _launchURL(context, widget.certificationLink!),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.gold,
+                                          foregroundColor: Colors.white,
+                                          elevation: 4,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'View Certificate',
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
                                       ),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.gold,
-                                        foregroundColor: Colors.white,
-                                        elevation: 2,
-                                        shadowColor: AppColors.gold.withOpacity(0.3),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                    )
+                                  else
+                                    Container(
+                                      width: double.infinity,
+                                      height: 36,
+                                      decoration: BoxDecoration(
+                                        color: widget.isDarkMode 
+                                            ? Colors.grey[800]?.withOpacity(0.5)
+                                            : Colors.grey[200]?.withOpacity(0.7),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Private Certificate',
+                                          style: GoogleFonts.inter(
+                                            color: widget.isDarkMode 
+                                                ? AppColors.darkWhite.withOpacity(0.6)
+                                                : AppColors.black.withOpacity(0.5),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
@@ -344,7 +439,8 @@ class _CertificationCardState extends State<CertificationCard>
               ),
             ),
           ),
-        );
+        ) // Closing Transform.scale
+        ); // Closing parenthesis
       },
     );
   }

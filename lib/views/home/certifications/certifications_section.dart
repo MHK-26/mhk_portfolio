@@ -439,59 +439,73 @@ class _CertificationsSectionState extends State<CertificationsSection>
       );
     }
 
-    // Responsive grid
-    if (constraints.maxWidth > 1200) {
-      return _buildGridView(filtered, 3);
-    } else if (constraints.maxWidth > 800) {
-      return _buildGridView(filtered, 2);
+    // Enhanced responsive grid with better breakpoints
+    if (constraints.maxWidth > 1400) {
+      return _buildEnhancedGridView(filtered, 4); // Large desktop: 4 columns
+    } else if (constraints.maxWidth > 1000) {
+      return _buildEnhancedGridView(filtered, 3); // Desktop: 3 columns
+    } else if (constraints.maxWidth > 700) {
+      return _buildEnhancedGridView(filtered, 2); // Tablet: 2 columns
     } else {
-      return _buildSingleColumnView(filtered);
+      return _buildEnhancedSingleColumnView(filtered); // Mobile: 1 column
     }
   }
 
-  Widget _buildGridView(List<Map<String, dynamic>> certs, int crossAxisCount) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-        childAspectRatio: 0.8,
+  Widget _buildEnhancedGridView(List<Map<String, dynamic>> certs, int crossAxisCount) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 24,
+          mainAxisSpacing: 24,
+          childAspectRatio: crossAxisCount == 4 ? 0.85 : 0.8, // Better ratio for 4 columns
+        ),
+        itemCount: certs.length,
+        itemBuilder: (context, index) {
+          return _buildEnhancedAnimatedCertCard(certs[index], index);
+        },
       ),
-      itemCount: certs.length,
-      itemBuilder: (context, index) {
-        return _buildAnimatedCertCard(certs[index], index);
-      },
     );
   }
 
-  Widget _buildSingleColumnView(List<Map<String, dynamic>> certs) {
-    return Column(
-      children: certs.asMap().entries.map((entry) {
-        return _buildAnimatedCertCard(entry.value, entry.key);
-      }).toList(),
+  Widget _buildEnhancedSingleColumnView(List<Map<String, dynamic>> certs) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        children: certs.asMap().entries.map((entry) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 32),
+            child: _buildEnhancedAnimatedCertCard(entry.value, entry.key),
+          );
+        }).toList(),
+      ),
     );
   }
 
-  Widget _buildAnimatedCertCard(Map<String, dynamic> cert, int index) {
+  Widget _buildEnhancedAnimatedCertCard(Map<String, dynamic> cert, int index) {
     return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 300 + (index * 100)),
+      duration: Duration(milliseconds: 400 + (index * 120)),
       tween: Tween(begin: 0.0, end: 1.0),
       builder: (context, value, child) {
         return Transform.translate(
-          offset: Offset(0, 30 * (1 - value)),
-          child: Opacity(
-            opacity: value,
-            child: CertificationCard(
-              title: cert['title']!,
-              img: cert['img']!,
-              issuer: cert['issuer']!,
-              category: cert['category']!,
-              year: cert['year']!,
-              skills: List<String>.from(cert['skills']!),
-              isDarkMode: widget.isDarkMode,
-              certificationLink: cert['certificationLink'],
+          offset: Offset(-15 * (1 - value), 40 * (1 - value)),
+          child: Transform.scale(
+            scale: 0.9 + (0.1 * value),
+            child: Opacity(
+              opacity: value,
+              child: CertificationCard(
+                title: cert['title']!,
+                img: cert['img']!,
+                issuer: cert['issuer']!,
+                category: cert['category']!,
+                year: cert['year']!,
+                skills: List<String>.from(cert['skills']!),
+                isDarkMode: widget.isDarkMode,
+                certificationLink: cert['certificationLink'],
+              ),
             ),
           ),
         );

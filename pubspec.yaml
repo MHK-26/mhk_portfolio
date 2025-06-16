@@ -30,15 +30,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  google_fonts:
-  url_launcher: ^6.1.7
-  flutter_screenutil: ^5.0.0
-  animated_text_kit:
-  provider: ^6.0.0
-  # email_validator:
-  # http:
-  scrollable_positioned_list:
-  # timelines:
+  google_fonts: ^6.1.0
+  url_launcher: ^6.2.1
+  flutter_screenutil: ^5.9.0
+  animated_text_kit: ^4.2.2
+  provider: ^6.1.1
+  http: ^1.1.2
+  scrollable_positioned_list: ^0.3.8
+  cached_network_image: ^3.3.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

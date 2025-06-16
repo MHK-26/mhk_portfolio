@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mhk_portfolio_flutter/utils/background_painter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:mhk_portfolio_flutter/widgets/focus_border.dart';
 
 class HeroSection extends StatefulWidget {
   final bool isDarkMode;
@@ -84,8 +87,15 @@ class _HeroSectionState extends State<HeroSection>
       ),
       child: Stack(
         children: [
-          // Background Pattern
-          _buildBackgroundPattern(),
+          // Background Pattern using utility
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                color: AppColors.gold.withOpacity(0.05),
+                isDarkMode: widget.isDarkMode,
+              ),
+            ),
+          ),
           
           // Main Content
           Center(
@@ -125,16 +135,6 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildBackgroundPattern() {
-    return Positioned.fill(
-      child: CustomPaint(
-        painter: GridPatternPainter(
-          color: AppColors.gold.withOpacity(0.05),
-          isDarkMode: widget.isDarkMode,
-        ),
-      ),
-    );
-  }
 
   Widget _buildProfileSection(bool isMobile) {
     return Column(
@@ -181,31 +181,7 @@ class _HeroSectionState extends State<HeroSection>
           ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColors.gold, AppColors.gold.withOpacity(0.8)],
-            ),
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.gold.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Text(
-            'Senior Software Engineer',
-            style: GoogleFonts.inter(
-              color: Colors.white,
-              fontSize: isMobile ? 14 : 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
+     
       ],
     );
   }
@@ -220,7 +196,7 @@ class _HeroSectionState extends State<HeroSection>
             TypewriterAnimatedText(
               '🚀 Flutter Developer',
               textStyle: GoogleFonts.inter(
-                color: widget.isDarkMode ? AppColors.darkWhite : AppColors.grey,
+                color: AppColors.gold,
                 fontSize: isMobile ? 20 : 24,
                 fontWeight: FontWeight.w500,
               ),
@@ -229,7 +205,7 @@ class _HeroSectionState extends State<HeroSection>
             TypewriterAnimatedText(
               '☁️ Cloud Architect',
               textStyle: GoogleFonts.inter(
-                color: widget.isDarkMode ? AppColors.darkWhite : AppColors.grey,
+                color: AppColors.gold,
                 fontSize: isMobile ? 20 : 24,
                 fontWeight: FontWeight.w500,
               ),
@@ -238,7 +214,7 @@ class _HeroSectionState extends State<HeroSection>
             TypewriterAnimatedText(
               '🔧 Backend Developer',
               textStyle: GoogleFonts.inter(
-                color: widget.isDarkMode ? AppColors.darkWhite : AppColors.grey,
+                color: AppColors.gold,
                 fontSize: isMobile ? 20 : 24,
                 fontWeight: FontWeight.w500,
               ),
@@ -256,7 +232,7 @@ class _HeroSectionState extends State<HeroSection>
     return Container(
       constraints: BoxConstraints(maxWidth: isMobile ? 350 : 500),
       child: Text(
-        'Building innovative solutions with 7+ years of experience in full-stack development and cloud architecture.',
+        'Crafting exceptional digital experiences through innovative solutions. With 7+ years of expertise in full-stack development, cloud architecture, and mobile applications, I transform complex ideas into scalable, user-centric products that make a real impact.',
         style: GoogleFonts.inter(
           color: widget.isDarkMode 
               ? AppColors.darkWhite.withOpacity(0.8)
@@ -275,63 +251,103 @@ class _HeroSectionState extends State<HeroSection>
       runSpacing: 12,
       alignment: WrapAlignment.center,
       children: [
-        _buildActionButton(
-          'View Projects',
+        _buildSocialButton(
+          'LinkedIn',
           Icons.work_outline,
           AppColors.gold,
           Colors.white,
           true,
           isMobile,
+          'https://www.linkedin.com/in/mhk26',
         ),
-        _buildActionButton(
-          'Contact Me',
-          Icons.person_outline,
+        _buildSocialButton(
+          'GitHub',
+          Icons.code,
           Colors.transparent,
           widget.isDarkMode ? AppColors.white : AppColors.black,
           false,
           isMobile,
+          'https://github.com/MHK-26',
         ),
       ],
     );
   }
 
-  Widget _buildActionButton(
+  Widget _buildSocialButton(
     String text,
     IconData icon,
     Color backgroundColor,
     Color textColor,
     bool filled,
     bool isMobile,
+    String url,
   ) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        // TODO: Add navigation logic
-      },
-      icon: Icon(icon, size: isMobile ? 18 : 20),
-      label: Text(
-        text,
-        style: GoogleFonts.inter(
-          fontSize: isMobile ? 14 : 16,
-          fontWeight: FontWeight.w600,
+    return Semantics(
+      button: true,
+      label: 'Open $text profile',
+      hint: 'Opens $text in a new tab',
+      child: FocusBorder(
+        child: ElevatedButton.icon(
+          onPressed: () => _launchURL(url),
+          icon: Icon(icon, size: isMobile ? 18 : 20),
+          label: Text(
+            text,
+            style: GoogleFonts.inter(
+              fontSize: isMobile ? 14 : 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: filled ? backgroundColor : Colors.transparent,
+            foregroundColor: textColor,
+            minimumSize: Size(120, isMobile ? 44 : 48), // Ensure proper touch targets
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 24 : 32,
+              vertical: isMobile ? 16 : 20,
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+              side: filled 
+                  ? BorderSide.none 
+                  : BorderSide(color: AppColors.gold, width: 2),
+            ),
+            elevation: filled ? 8 : 0,
+            shadowColor: AppColors.gold.withOpacity(0.3),
+          ).copyWith(
+            // Enhanced focus style
+            overlayColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.focused)) {
+                return AppColors.gold.withOpacity(0.1);
+              }
+              if (states.contains(WidgetState.hovered)) {
+                return AppColors.gold.withOpacity(0.05);
+              }
+              return null;
+            }),
+          ),
         ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: filled ? backgroundColor : Colors.transparent,
-        foregroundColor: textColor,
-        padding: EdgeInsets.symmetric(
-          horizontal: isMobile ? 24 : 32,
-          vertical: isMobile ? 16 : 20,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-          side: filled 
-              ? BorderSide.none 
-              : BorderSide(color: AppColors.gold, width: 2),
-        ),
-        elevation: filled ? 8 : 0,
-        shadowColor: AppColors.gold.withOpacity(0.3),
       ),
     );
+  }
+
+  void _launchURL(String url) async {
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        await launchUrl(Uri.parse(url));
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Could not launch $url')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error launching URL: $e')),
+        );
+      }
+    }
   }
 
   Widget _buildScrollIndicator() {
@@ -363,41 +379,4 @@ class _HeroSectionState extends State<HeroSection>
       ],
     );
   }
-}
-
-class GridPatternPainter extends CustomPainter {
-  final Color color;
-  final bool isDarkMode;
-
-  GridPatternPainter({required this.color, required this.isDarkMode});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1;
-
-    const spacing = 50.0;
-    
-    // Draw vertical lines
-    for (double x = 0; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-    
-    // Draw horizontal lines
-    for (double y = 0; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

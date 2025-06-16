@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mhk_portfolio_flutter/provider/theme.dart';
 import 'package:provider/provider.dart';
 import 'package:mhk_portfolio_flutter/utils/colors.dart';
+import 'package:mhk_portfolio_flutter/utils/background_painter.dart';
 import 'package:mhk_portfolio_flutter/views/home/hero/hero_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/info/info_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/navigation/navigation_bar.dart';
 import 'package:mhk_portfolio_flutter/views/home/projects/projects_section.dart';
+import 'package:mhk_portfolio_flutter/views/home/blog/blog_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/certifications/certifications_section.dart';
 import 'package:mhk_portfolio_flutter/views/home/contact/contact_section.dart';
+import 'package:mhk_portfolio_flutter/widgets/back_to_top_button.dart';
+import 'package:mhk_portfolio_flutter/widgets/performance_overlay.dart' as custom;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -24,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     'hero': GlobalKey(),
     'about': GlobalKey(),
     'projects': GlobalKey(),
+    'blog': GlobalKey(),
     'certifications': GlobalKey(),
     'contact': GlobalKey(),
   };
@@ -36,8 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _initializeApp() async {
-    // Simulate loading time for awesome effect
-    await Future.delayed(const Duration(milliseconds: 2500));
+    // Quick initialization - removed artificial delay for better UX
+    await Future.delayed(const Duration(milliseconds: 100));
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -91,14 +97,18 @@ class _HomeScreenState extends State<HomeScreen> {
       return _buildLoadingScreen(isDarkMode);
     }
 
-    return Scaffold(
-      backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.background,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            controller: _scrollController,
-            child: Column(
-              children: [
+    return custom.PerformanceOverlay(
+      showOverlay: kDebugMode,
+      child: Scaffold(
+        backgroundColor: isDarkMode ? AppColors.darkBackground : AppColors.background,
+        body: Stack(
+          children: [
+            RepaintBoundary(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                physics: const ClampingScrollPhysics(),
+                child: Column(
+                  children: [
                 // Add padding for navbar
                 const SizedBox(height: 80),
                 
@@ -147,47 +157,73 @@ class _HomeScreenState extends State<HomeScreen> {
                 _buildSectionDivider(isDarkMode),
                 
                 // Projects Section
-                Container(
-                  key: _sectionKeys['projects'],
-                  padding: const EdgeInsets.symmetric(vertical: 60),
-                  child: ProjectsPage(isDarkMode: isDarkMode),
+                RepaintBoundary(
+                  child: Container(
+                    key: _sectionKeys['projects'],
+                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    child: ProjectsPage(isDarkMode: isDarkMode),
+                  ),
                 ),
                 
                 _buildSectionDivider(isDarkMode),
                 
                 // Certifications Section
-                Container(
-                  key: _sectionKeys['certifications'],
-                  padding: const EdgeInsets.symmetric(vertical: 60),
-                  child: CertificationsSection(isDarkMode: isDarkMode),
+                RepaintBoundary(
+                  child: Container(
+                    key: _sectionKeys['certifications'],
+                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    child: CertificationsSection(isDarkMode: isDarkMode),
+                  ),
+                ),
+                
+                _buildSectionDivider(isDarkMode),
+                
+                // Blog Section
+                RepaintBoundary(
+                  child: Container(
+                    key: _sectionKeys['blog'],
+                    padding: const EdgeInsets.symmetric(vertical: 60),
+                    child: BlogSection(isDarkMode: isDarkMode),
+                  ),
                 ),
                 
                 _buildSectionDivider(isDarkMode),
                 
                 // Contact Section
-                Container(
-                  key: _sectionKeys['contact'],
-                  child: ContactSection(isDarkMode: isDarkMode),
+                RepaintBoundary(
+                  child: Container(
+                    key: _sectionKeys['contact'],
+                    child: ContactSection(isDarkMode: isDarkMode),
+                  ),
                 ),
               ],
             ),
           ),
+            ),
           
           // Sticky Navigation
           Positioned(
             top: 0,
             left: 0,
             right: 0,
-            child: CustomNavigationBar(
-              isDarkMode: isDarkMode,
-              onThemeToggle: () => themeProvider.toggleTheme(),
-              onSectionTap: _scrollToSection,
-              currentSection: _currentSection,
+            child: RepaintBoundary(
+              child: CustomNavigationBar(
+                isDarkMode: isDarkMode,
+                onThemeToggle: () => themeProvider.toggleTheme(),
+                onSectionTap: _scrollToSection,
+                currentSection: _currentSection,
+              ),
             ),
+          ),
+          
+          // Back to Top Button
+          BackToTopButton(
+            scrollController: _scrollController,
+            isDarkMode: isDarkMode,
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildSectionDivider(bool isDarkMode) {
@@ -218,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Stack(
           children: [
-            // Background Pattern
+            // Background Pattern using utility
             Positioned.fill(
               child: CustomPaint(
                 painter: GridPatternPainter(
@@ -385,41 +421,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
-
-class GridPatternPainter extends CustomPainter {
-  final Color color;
-  final bool isDarkMode;
-
-  GridPatternPainter({required this.color, required this.isDarkMode});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1;
-
-    const spacing = 50.0;
-    
-    // Draw vertical lines
-    for (double x = 0; x < size.width; x += spacing) {
-      canvas.drawLine(
-        Offset(x, 0),
-        Offset(x, size.height),
-        paint,
-      );
-    }
-    
-    // Draw horizontal lines
-    for (double y = 0; y < size.height; y += spacing) {
-      canvas.drawLine(
-        Offset(0, y),
-        Offset(size.width, y),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
